@@ -31,10 +31,15 @@ module.exports = {
 
             fs.unlinkSync(file.path)
 
-            return res.status(200).json(response.data);
+            /* const data = {
+                disease: response.data.class_name,
+                confidence: response.data.prediction
+            } */
+
+            return res.status(200).json(response.data)
         } catch (error) {
-            console.log(error);
-            return res.status(500).json("Failed to upload the photo");
+            /* console.log(error); */
+            return res.status(500).json("internal server error");
         }
 
     }
