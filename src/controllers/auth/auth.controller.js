@@ -76,6 +76,21 @@ module.exports = {
             return res.status(500).json("Internal server error")
         }
     },
+    resendOtp: async (req, res) => {
+        try {
+            const { email } = req.body
+
+            const emailSent = await utilsOtp.sendOtp(email, 'resend-otp')
+
+            if (emailSent) {
+                return res.status(200).json(utils.apiSuccess("Otp berhasil dikirim ulang. Periksa email masuk"))
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
+    },
 
     login: async (req, res) => {
         try {
@@ -121,12 +136,44 @@ module.exports = {
         }
     },
 
-    me: async (req, res) => {
-
-    },
-
     changePassword: async (req, res) => {
+        try {
 
+            const id = res.user.id
+            const { oldPassword, newPassword } = req.body
+
+            const user = await User.findByPk(id)
+
+            if (!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
+
+            if (user.password) {
+                const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
+
+                if (!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
+            }
+
+            const hashPassword = await utils.hashData(newPassword)
+
+
+            await User.update(
+                { password: hashPassword },
+                {
+                    where: {
+                        id: id
+                    }
+                }
+            )
+
+            /* const sendNotification = await notification.createNotification("Update Password", null, "Ubah password berhasil" ,userId)
+
+            if(!sendNotification) console.log('Gagal mengirim notifikasi') */
+
+            return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
+        }
     },
 
     resetPassword: async (req, res) => {

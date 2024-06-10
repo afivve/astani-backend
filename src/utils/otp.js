@@ -27,11 +27,11 @@ module.exports = {
 
             if (confEmail === 'register') {
                 mailOptions = await emailHelper.register(email, otp)
-            } /* else if (confEmail === 'request-reset-password') {
+            } else if (confEmail === 'request-reset-password') {
                 mailOptions = await emailHelper.requestResetPassword(email, otp)
             } else if (confEmail === 'resend-otp') {
                 mailOptions = await emailHelper.resendOtp(email, otp)
-            } */
+            }
 
             await transporter.sendEmail(mailOptions)
 

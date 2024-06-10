@@ -20,12 +20,12 @@ module.exports = {
         }
     },
 
-    /*     requestResetPassword: async (email, resetToken) => {
-            return {
-                from: NODEMAILER_EMAIL,
-                to: email,
-                subject: "Reset Password",
-                html: `
+    requestResetPassword: async (email, resetToken) => {
+        return {
+            from: NODEMAILER_EMAIL,
+            to: email,
+            subject: "Reset Password",
+            html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
                     <h2 style="color: #333; text-align: center;">Reset Password</h2>
                     <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; border-radius: 5px;">
@@ -39,8 +39,8 @@ module.exports = {
                     </div>
                 </div>
             `,
-            }
-        }, */
+        }
+    },
 
     resendOtp: async (email, otp) => {
         return {

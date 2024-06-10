@@ -5,7 +5,7 @@ const profileRoute = require('./profile.route')
 
 const router = express.Router()
 
-router.use(authRoute)
+router.use("/auth", authRoute)
 router.use(profileRoute)
 router.use(predictRoute)
 
