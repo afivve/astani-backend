@@ -6,6 +6,14 @@ module.exports = {
         try {
             const { name, caused, symtomps } = req.body
 
+            const checkName = await Disease.findOne({
+                where: {
+                    name: name
+                }
+            })
+
+            if (checkName) return res.status(409).json(utils.apiError("Nama telah digunakan"))
+
             const disease = await Disease.create({
                 name, caused, symtomps
             })
