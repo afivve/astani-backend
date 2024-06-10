@@ -2,6 +2,9 @@ const axios = require('axios')
 const fs = require('fs')
 const FormData = require('form-data')
 
+const { Disease } = require('../../database/models')
+const utils = require('../../utils')
+
 module.exports = {
 
     predict: async (req, res) => {
@@ -14,9 +17,9 @@ module.exports = {
             'image/webp'
         ]
 
-        if (typeof file === 'undefined') return res.status(400).json("Gambar tidak boleh kosong")
+        if (typeof file === 'undefined') return res.status(400).json(utils.apiError("Gambar tidak boleh kosong"))
 
-        if (!allowedMimes.includes(file.mimetype)) return res.status(400).json("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)")
+        if (!allowedMimes.includes(file.mimetype)) return res.status(400).json(utils.apiError("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)"))
 
         try {
 
@@ -36,10 +39,25 @@ module.exports = {
                 confidence: response.data.prediction
             } */
 
-            return res.status(200).json(response.data)
+            const disease = await Disease.findOne({
+                where: {
+                    name: response.data.class_name
+                }
+            })
+
+            if (!disease) return res.status(404).json(utils.apiError("Tidak ada data"))
+
+            const data = {
+                name: response.data.class_name,
+                confidence: response.data.prediction,
+                caused: disease.caused,
+                symtomps: disease.symtomps,
+            }
+
+            return res.status(200).json(utils.apiSuccess("Identifikasi berhasil dilakukan", data))
         } catch (error) {
-            /* console.log(error); */
-            return res.status(500).json("internal server error");
+            console.log(error);
+            return res.status(500).json(utils.apiError("internal server error"))
         }
 
     }
