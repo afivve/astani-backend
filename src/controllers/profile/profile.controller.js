@@ -21,4 +21,12 @@ module.exports = {
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
+
+    changePassword: (req, res) => {
+        try {
+
+        } catch (error) {
+
+        }
+    }
 }
