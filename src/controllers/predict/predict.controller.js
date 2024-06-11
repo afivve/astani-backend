@@ -1,6 +1,7 @@
 const axios = require('axios')
 const fs = require('fs')
 const FormData = require('form-data')
+const sharp = require('sharp')
 
 const { Disease } = require('../../database/models')
 const utils = require('../../utils')
@@ -22,6 +23,14 @@ module.exports = {
         if (!allowedMimes.includes(file.mimetype)) return res.status(400).json(utils.apiError("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)"))
 
         try {
+
+            const image = sharp(file.path);
+            const metadata = await image.metadata();
+
+            if (metadata.channels !== 3) {
+                fs.unlinkSync(file.path);
+                return res.status(400).json(utils.apiError("Gambar harus dalam format RGB"));
+            }
 
             const form = new FormData();
             form.append('file', fs.createReadStream(file.path));
