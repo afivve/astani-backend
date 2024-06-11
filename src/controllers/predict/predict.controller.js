@@ -25,11 +25,11 @@ module.exports = {
         try {
 
             const image = sharp(file.path);
-            const metadata = await image.metadata();
+            const metadata = await image.metadata()
 
             if (metadata.channels !== 3) {
                 fs.unlinkSync(file.path);
-                return res.status(400).json(utils.apiError("Gambar harus dalam format RGB"));
+                return res.status(400).json(utils.apiError("Gambar harus dalam format RGB"))
             }
 
             const form = new FormData();

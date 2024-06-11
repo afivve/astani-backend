@@ -1,4 +1,4 @@
-const { Disease } = require('../../database/models')
+const { Disease, DiseaseSolution } = require('../../database/models')
 const utils = require('../../utils')
 
 module.exports = {
@@ -29,7 +29,12 @@ module.exports = {
         try {
             const id = req.params.id
 
-            const disease = await Disease.findByPk(id)
+            const disease = await Disease.findByPk(id, {
+                include: [{
+                    model: DiseaseSolution,
+                    as: 'solutions'
+                }]
+            })
 
             if (!disease) return res.status(404).json(utils.apiError("Data berdasarkan id tidak ditemukan"))
 
