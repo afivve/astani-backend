@@ -1,5 +1,4 @@
 const axios = require('axios')
-const fs = require('fs')
 const FormData = require('form-data')
 const sharp = require('sharp')
 
@@ -80,7 +79,8 @@ module.exports = {
                     imageUrl: uploadFile.url,
                     imageFilename: uploadFile.name,
                     userId: id,
-                    diseaseId: diseases.id
+                    diseaseId: diseases.id,
+                    confidence: response.data.prediction
                 })
 
                 const data = {
@@ -92,14 +92,14 @@ module.exports = {
                 };
 
                 if (history) {
-                    return res.status(200).json(utils.apiSuccess("Identifikasi berhasil dilakukan", data));
+                    return res.status(200).json(utils.apiSuccess("Identifikasi berhasil dilakukan", data))
                 }
             }
 
-            return res.status(500).json(utils.apiError("Internal server error"));
+            return res.status(500).json(utils.apiError("Internal server error"))
         } catch (error) {
             console.log(error);
-            return res.status(500).json(utils.apiError("Internal server error"));
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     }
 }
