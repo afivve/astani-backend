@@ -9,11 +9,29 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      imageUrl: {
+        type: Sequelize.STRING
+      },
+      imageFilename: {
+        type: Sequelize.STRING
+      },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Users',
+          key: 'id',
+          as: 'userId',
+        }
       },
       diseaseId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Diseases',
+          key: 'id',
+          as: 'diseaseId',
+        }
       },
       createdAt: {
         allowNull: false,

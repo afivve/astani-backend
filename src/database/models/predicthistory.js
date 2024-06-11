@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   PredictHistory.init({
+    imageUrl: DataTypes.STRING,
+    imageFilename: DataTypes.STRING,
     userId: DataTypes.INTEGER,
     diseaseId: DataTypes.INTEGER
   }, {

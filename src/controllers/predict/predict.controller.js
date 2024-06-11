@@ -3,71 +3,103 @@ const fs = require('fs')
 const FormData = require('form-data')
 const sharp = require('sharp')
 
-const { Disease } = require('../../database/models')
+const { User, Disease, DiseaseSolution, PredictHistory } = require('../../database/models')
 const utils = require('../../utils')
+const imageKitFile = require('../../utils/imageKitFile')
 
 module.exports = {
 
     predict: async (req, res) => {
-        const file = req.file
-
-        const allowedMimes = [
-            'image/png',
-            'image/jpeg',
-            'image/jpg',
-            'image/webp'
-        ]
-
-        if (typeof file === 'undefined') return res.status(400).json(utils.apiError("Gambar tidak boleh kosong"))
-
-        if (!allowedMimes.includes(file.mimetype)) return res.status(400).json(utils.apiError("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)"))
-
         try {
+            const { id } = res.user
+            const file = req.file
 
-            const image = sharp(file.path);
-            const metadata = await image.metadata()
+            const allowedMimes = [
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+                'image/webp'
+            ];
 
-            if (metadata.channels !== 3) {
-                fs.unlinkSync(file.path);
-                return res.status(400).json(utils.apiError("Gambar harus dalam format RGB"))
+            if (!file) {
+                return res.status(400).json(utils.apiError("Gambar tidak boleh kosong"));
             }
 
+            if (!allowedMimes.includes(file.mimetype)) {
+                /*  fs.unlinkSync(file.path); */
+                return res.status(400).json(utils.apiError("Harus bertipe gambar (.png, .jpeg, .jpg, .webp)"));
+            }
+
+            // Validasi format RGB
+            const image = sharp(file.buffer);
+            const metadata = await image.metadata();
+            if (metadata.channels !== 3) {
+                /*  fs.unlinkSync(file.path); */
+                return res.status(400).json(utils.apiError("Gambar harus dalam format RGB"));
+            }
+
+            // Membuat form-data untuk prediksi
             const form = new FormData();
-            form.append('file', fs.createReadStream(file.path));
+            form.append('file', file.buffer, {
+                filename: file.originalname,
+                contentType: file.mimetype
+            });
 
             const response = await axios.post('http://localhost:8000/predict', form, {
                 headers: {
                     ...form.getHeaders(),
                 }
-            })
+            });
 
-            fs.unlinkSync(file.path)
+            // Menghapus file lokal setelah prediksi
+            /*  fs.unlinkSync(file.path); */
 
-            /* const data = {
-                disease: response.data.class_name,
-                confidence: response.data.prediction
-            } */
+            if (response && response.data && response.data.class_name) {
+                // Unggah file ke ImageKit setelah prediksi berhasil
+                const uploadFile = await imageKitFile.upload(file);
 
-            const disease = await Disease.findOne({
-                where: {
-                    name: response.data.class_name
+                if (!uploadFile) {
+                    return res.status(500).json(utils.apiError("Internal server error"));
                 }
-            })
 
-            if (!disease) return res.status(404).json(utils.apiError("Tidak ada data"))
+                const diseases = await Disease.findOne({
+                    where: {
+                        name: response.data.class_name
+                    },
+                    include: [{
+                        model: DiseaseSolution,
+                        as: 'solutions'
+                    }]
+                });
 
-            const data = {
-                name: response.data.class_name,
-                confidence: response.data.prediction,
-                caused: disease.caused,
-                symtomps: disease.symtomps,
+                if (!diseases) {
+                    return res.status(404).json(utils.apiError("Tidak ada data"));
+                }
+
+                const history = await PredictHistory.create({
+                    imageUrl: uploadFile.url,
+                    imageFilename: uploadFile.name,
+                    userId: id,
+                    diseaseId: diseases.id
+                })
+
+                const data = {
+                    name: diseases.name,
+                    confidence: response.data.prediction,
+                    caused: diseases.caused,
+                    symtomps: diseases.symtomps,
+                    solutions: diseases.solutions
+                };
+
+                if (history) {
+                    return res.status(200).json(utils.apiSuccess("Identifikasi berhasil dilakukan", data));
+                }
             }
 
-            return res.status(200).json(utils.apiSuccess("Identifikasi berhasil dilakukan", data))
+            return res.status(500).json(utils.apiError("Internal server error"));
         } catch (error) {
             console.log(error);
-            return res.status(500).json(utils.apiError("internal server error"))
+            return res.status(500).json(utils.apiError("Internal server error"));
         }
-
     }
 }
