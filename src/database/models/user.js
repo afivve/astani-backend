@@ -19,13 +19,17 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
+    phone: DataTypes.INTEGER,
     password: DataTypes.STRING,
     gender: DataTypes.STRING,
     age: DataTypes.INTEGER,
-    address: DataTypes.STRING,
+    city: DataTypes.STRING,
+    province: DataTypes.STRING,
     verified: DataTypes.BOOLEAN,
     subscriptionType: DataTypes.STRING,
     role: DataTypes.STRING,
+    googleId: DataTypes.STRING,
+    resetToken: DataTypes.STRING,
     photoProfile: DataTypes.STRING,
     imageFilename: DataTypes.STRING
   }, {

@@ -6,7 +6,7 @@ module.exports = {
 
     register: async (req, res) => {
         try {
-            const { name, email, password, gender, age, address } = req.body
+            const { name, email, phone, password, gender, age, province, city } = req.body
 
             const hashPassword = await utils.hashData(password)
 
@@ -24,11 +24,12 @@ module.exports = {
                 const user = await User.create({
                     name: name,
                     email: email,
+                    phone: phone,
                     password: hashPassword,
                     gender: gender,
                     age: age,
-                    address: address
-
+                    province: province,
+                    city: city
                 })
 
                 return res.status(201).json(utils.apiSuccess("Pendaftaran akun berhasil. Periksa email masuk untuk kode verifikasi Otp", { email: user.email }))
@@ -76,6 +77,7 @@ module.exports = {
             return res.status(500).json("Internal server error")
         }
     },
+
     resendOtp: async (req, res) => {
         try {
             const { email } = req.body

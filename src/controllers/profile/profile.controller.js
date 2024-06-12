@@ -10,8 +10,11 @@ module.exports = {
             const data = {
                 name: user.name,
                 email: user.email,
+                phone: user.phone,
                 gender: user.gender,
                 age: user.age,
+                city: user.city,
+                province: user.province,
                 photoProfile: user.photoProfile
             }
 
