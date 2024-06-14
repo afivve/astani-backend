@@ -9,5 +9,6 @@ const upload = multer({ storage })
 const router = express.Router()
 
 router.post('/predict', upload.single('file'), verifyToken, controller.predict)
+router.post('/predict-dummy', upload.single('file'), verifyToken, controller.predictDummy)
 
 module.exports = router

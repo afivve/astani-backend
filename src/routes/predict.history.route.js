@@ -7,6 +7,6 @@ const router = express.Router()
 
 router.get('/predict-history', verifyToken, controller.readByIdUser)
 router.get('/predict-history/:historyId', verifyToken, controller.readDetailHistoryByIdUser)
-router.get('/predict-histories', checkRole('admin'), controller.readAll)
+router.get('/predict-histories', verifyToken, checkRole('admin'), controller.readAll)
 
 module.exports = router
