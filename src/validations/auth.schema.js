@@ -39,6 +39,11 @@ module.exports = {
             .isString().withMessage("Password harus berupa string"),
     ],
 
+    googleLogin: [
+        body("accessToken")
+            .notEmpty().withMessage("Access Token tidak boleh kosong")
+    ],
+
     verifyUser: [
         body("email")
             .notEmpty().withMessage("Email tidak boleh kosong")
@@ -55,18 +60,26 @@ module.exports = {
             .isEmail().withMessage("Format email tidak valid"),
     ],
 
-    changePassword: [
-        body("newPassword")
+    requestResetPassword: [
+        body("email")
+            .notEmpty().withMessage("Email tidak boleh kosong")
+            .isEmail().withMessage("Format email tidak valid"),
+    ],
+
+    resetPassword: [
+        body("password")
             .notEmpty().withMessage("Password baru tidak boleh kosong")
             .isLength({ min: 8 }).withMessage("Password baru minimal 8 karakter")
-            .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password baru harus mengandung setidaknya satu huruf kapital dan satu angka"),
+            .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password baru harus mengandung setidaknya satu huruf kapital dan satu angka")
+            .isString().withMessage("Password harus berupa string"),
         body("confPassword")
             .notEmpty().withMessage("Konfirmasi password baru tidak boleh kosong")
             .custom((confPassword, { req }) => {
-                if (confPassword !== req.body.newPassword) {
+                if (confPassword !== req.body.password) {
                     throw new Error("Password baru dan konfirmasi password baru tidak cocok");
                 }
                 return true;
             })
+            .isString().withMessage("Konfirmasi password harus berupa string"),
     ],
 }
