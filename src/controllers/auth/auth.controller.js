@@ -180,6 +180,50 @@ module.exports = {
 
     resetPassword: async (req, res) => {
 
+    },
+
+    loginAdmin: async (req, res) => {
+        try {
+
+            const { email, password } = req.body
+
+            const user = await User.findOne({
+                where: {
+                    email: email,
+                },
+            })
+
+            if (!user) return res.status(400).json(utils.apiError("Email tidak terdaftar"))
+
+            const verifyPassword = await utils.verifyHashData(password, user.password)
+
+            if (!verifyPassword) return res.status(409).json(utils.apiError("Password salah"))
+
+            const verified = user.verified
+
+            if (!verified) {
+                const emailSent = await utilsOtp.sendOtp(email, 'register')
+                if (emailSent) {
+                    return res.status(409).json(utils.apiError("Akun belum terverifikasi. Periksa email masuk untuk verifikasi kode Otp", { email }))
+                } else {
+                    return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+                }
+            }
+
+            if (!user.role === 'admin') return res.status(403).json(utils.apiError("Email atau Password Salah"))
+
+            const payload = { id: user.id, roleName: user.role }
+            const token = await utils.createJwt(payload)
+
+            const data = {
+                token: token
+            }
+
+            return res.status(200).json(utils.apiSuccess("Login berhasil", data))
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+        }
     }
 
 }
