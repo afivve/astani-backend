@@ -38,13 +38,13 @@ module.exports = {
                 return res.status(201).json(utils.apiSuccess("Pendaftaran akun berhasil. Periksa email masuk untuk kode verifikasi Otp", { email: user.email }))
 
             } else {
-                return res.status(500).json("Internal server error")
+                return res.status(500).json(utils.apiError("Internal server error"))
             }
 
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     },
 
@@ -77,7 +77,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     },
 

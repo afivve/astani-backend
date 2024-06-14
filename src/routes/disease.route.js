@@ -5,7 +5,6 @@ const schema = require('../validations/disease.schema')
 const { verifyToken } = require('../middlewares/verify.token')
 const checkRole = require('../middlewares/check.role')
 
-
 const router = express.Router()
 
 router.post('/disease', verifyToken, checkRole('admin'), validate(schema.disease), controller.create)

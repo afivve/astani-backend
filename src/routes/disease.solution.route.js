@@ -8,9 +8,11 @@ const checkRole = require('../middlewares/check.role')
 const router = express.Router()
 
 router.post('/disease/:diseaseId/disease-solution', validate(schema.diseaseSolution), verifyToken, checkRole('admin'), controller.create)
-/* router.get('/disease', controller.readAll)
-router.get('/disease/:id', controller.readById)
+router.get('/disease/:diseaseId/disease-solution/', controller.readByIdDisease)
+router.get('/disease/:diseaseId/disease-solution/:solutionId', controller.readByIdSolution)
+router.put('/disease/:diseaseId/disease-solution/:solutionId', controller.readByIdSolution)
+router.delete('/disease/:diseaseId/disease-solution/:solutionId', controller.readByIdSolution)
 router.put('/disease/:id', controller.update)
 router.delete('/disease/:id', controller.delete)
- */
+
 module.exports = router

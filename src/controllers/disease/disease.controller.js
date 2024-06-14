@@ -21,7 +21,7 @@ module.exports = {
             return res.status(201).json(utils.apiSuccess("Data berhasil dibuat", disease))
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     },
 
@@ -42,7 +42,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     },
 
@@ -56,7 +56,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     },
 
@@ -78,7 +78,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     },
 
@@ -100,7 +100,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json("Internal server error")
+            return res.status(500).json(utils.apiError("Internal server error"))
         }
     }
 }
