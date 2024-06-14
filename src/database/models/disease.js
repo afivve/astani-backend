@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'diseaseId',
         as: 'solutions'
       })
+      Disease.hasMany(models.DiseaseLiteratur, {
+        foreignKey: 'diseaseId',
+        as: 'literaturs'
+      })
       Disease.hasMany(models.PredictHistory, {
         foreignKey: 'diseaseId',
         as: 'disease'

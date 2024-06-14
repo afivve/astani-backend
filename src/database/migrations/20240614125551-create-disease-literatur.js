@@ -2,34 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Notifications', {
+    await queryInterface.createTable('DiseaseLiteraturs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      type: {
-        type: Sequelize.STRING
-      },
-      message: {
-        type: Sequelize.STRING
-      },
       link: {
         type: Sequelize.STRING
       },
-      read: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Users',
-          key: 'id',
-          as: 'userId',
-        }
+      diseaseId: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +26,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Notifications');
+    await queryInterface.dropTable('DiseaseLiteraturs');
   }
 };

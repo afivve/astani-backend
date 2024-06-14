@@ -2,7 +2,7 @@ const axios = require('axios')
 const FormData = require('form-data')
 const sharp = require('sharp')
 
-const { User, Disease, DiseaseSolution, PredictHistory } = require('../../database/models')
+const { User, Disease, DiseaseSolution, PredictHistory, DiseaseLiteratur } = require('../../database/models')
 const utils = require('../../utils')
 const imageKitFile = require('../../utils/imageKitFile')
 
@@ -126,39 +126,50 @@ module.exports = {
                 return res.status(500).json(utils.apiError("Internal server error"))
             }
 
-            const diseaseId = 2
+            const getRandomNumberInRange = (min, max) => {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            };
+
+            const randomId = getRandomNumberInRange(1, 4);
+
+            const diseases = await Disease.findOne({
+                where: {
+                    id: randomId
+                },
+                include: [
+                    {
+                        model: DiseaseSolution,
+                        as: 'solutions'
+                    },
+                    {
+                        model: DiseaseLiteratur,
+                        as: 'literaturs'
+                    },
+                ]
+            });
+
+            if (!diseases) {
+                return res.status(404).json(utils.apiError("Tidak ada data"))
+            }
+
+
+            const randomConifendce = getRandomNumberInRange(50, 98);
 
             const history = await PredictHistory.create({
                 imageUrl: uploadFile.url,
                 imageFilename: uploadFile.name,
                 userId: id,
-                diseaseId: diseaseId,
-                confidence: 90
+                diseaseId: diseases.id,
+                confidence: randomConifendce
             })
 
             const data = {
-                name: "Hawar Daun Bakteri",
-                confidence: 90,
-                caused: "Virus Xanthomonas oryzae pv. oryzae",
-                symtomps: "Gejala awal penyakit HDB terlihat pada tepi daun yang berubah menjadi",
-                solutions: [
-                    {
-                        solutionId: 1,
-                        action: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, voluptas!"
-                    },
-                    {
-                        solutionId: 2,
-                        action: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, voluptas!"
-                    },
-                    {
-                        solutionId: 3,
-                        action: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, voluptas!"
-                    },
-                    {
-                        solutionId: 4,
-                        action: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, voluptas!"
-                    },
-                ]
+                name: diseases.name,
+                confidence: randomConifendce,
+                caused: diseases.caused,
+                symtomps: diseases.symtomps,
+                solutions: diseases.solutions,
+                literaturs: diseases.literaturs
             };
 
             if (history) {
