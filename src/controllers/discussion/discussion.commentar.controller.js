@@ -1,6 +1,7 @@
 const { User, Discussion, DiscussionCommentar } = require('../../database/models')
 const utils = require('../../utils')
 const imageKitFile = require('../../utils/imageKitFile')
+const notification = require('../../utils/notification')
 
 module.exports = {
     create: async (req, res) => {
@@ -31,6 +32,8 @@ module.exports = {
             const discussionId = req.params.discussionId
             const userId = res.user.id
 
+            const user = await User.findByPk(userId)
+
             const checkDiscussion = await Discussion.findOne({
                 where: {
                     id: discussionId
@@ -39,9 +42,9 @@ module.exports = {
 
             if (!checkDiscussion) return res.status(404).json(utils.apiError("Diskusi tidak ditemukan"))
 
+            const userIdDiscussion = checkDiscussion.userId
 
             const discussionCommentar = await DiscussionCommentar.create({
-
                 commentar: commentar,
                 discussionId: discussionId,
                 userId: userId,
@@ -50,8 +53,21 @@ module.exports = {
 
             })
 
+            const fullTitle = checkDiscussion.title
+            const limitedTitle = fullTitle.split(' ').slice(0, 4).join(' ')
+            const limitedCommentar = commentar.split(' ').slice(0, 3).join(' ')
 
-            return res.status(201).json(utils.apiSuccess("sukses", discussionCommentar))
+            const message = `${user.name} memberikan komentar pada diskusi Anda, (${limitedTitle}...: ${limitedCommentar}...)`
+
+            const link = `http://localhost:5000/api/v1/discussions/${checkDiscussion.id}`
+
+            if (userId !== userIdDiscussion) {
+                const sendNotification = await notification.createNotification("Forum Diskusi", message, link, false, userIdDiscussion)
+
+                if (!sendNotification) console.log('Gagal mengirim notifikasi')
+            }
+
+            return res.status(201).json(utils.apiSuccess("Berhasil membuat komentar", discussionCommentar))
 
         } catch (error) {
             console.log(error)

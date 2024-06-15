@@ -1,5 +1,5 @@
 const { Notification } = require('../../database/models')
-const utils = require('../../utils/utils')
+const utils = require('../../utils')
 
 module.exports = {
 
@@ -15,14 +15,17 @@ module.exports = {
                 }
             })
 
-            const totalNotification = notifications.length
+            const notificationUnread = await Notification.findAll({
+                where: {
+                    userId: res.user.id,
+                    read: false
+                },
+            })
 
-            const data = {
-                ...notifications,
-                totalNotification
-            }
+            const totalNotificationUnread = notificationUnread.length
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mendapatkan notifikasi berdasarkan user id", data))
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mendapatkan notifikasi berdasarkan user id", notifications, { notificationUnread: totalNotificationUnread }))
 
         } catch (error) {
             console.log(error)

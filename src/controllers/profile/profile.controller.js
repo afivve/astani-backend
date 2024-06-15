@@ -129,9 +129,9 @@ module.exports = {
                 }
             })
 
-            /* const sendNotification = await notification.createNotification("Update Profile", null, "Profile berhasil diperbarui", res.user.id)
+            const sendNotification = await notification.createNotification("Update Profile", "Profile berhasil diperbarui", null, false, res.user.id)
 
-            if(!sendNotification) console.log('Gagal mengirim notifikasi') */
+            if (!sendNotification) console.log('Gagal mengirim notifikasi')
 
             return res.status(200).json(utils.apiSuccess("Profile berhasil diperbarui"))
 
@@ -177,9 +177,9 @@ module.exports = {
                 }
             )
 
-            /* const sendNotification = await notification.createNotification("Update Profile Photo", null, "Foto profile berhasil diubah", res.user.id)
+            const sendNotification = await notification.createNotification("Update Profile Photo", "Foto profile berhasil diubah", null, false, res.user.id)
 
-            if(!sendNotification) console.log('Gagal mengirim notifikasi') */
+            if (!sendNotification) console.log('Gagal mengirim notifikasi')
 
             return res.status(200).json(utils.apiSuccess("Foto profile berhasil diperbarui"))
 
