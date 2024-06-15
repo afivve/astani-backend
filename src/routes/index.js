@@ -6,10 +6,12 @@ const diseaseSolutionRoute = require('./disease.solution.route')
 const authRoute = require('./auth.route')
 const profileRoute = require('./profile.route')
 const discussionRoute = require('./discussion.route')
+const notificationRoute = require('./notification.route')
 
 const router = express.Router()
 
 router.use("/auth", authRoute)
+router.use(notificationRoute)
 router.use(discussionRoute)
 router.use(profileRoute)
 router.use(diseaseSolutionRoute)

@@ -1,6 +1,7 @@
 const { User } = require('../../database/models')
 const utils = require('../../utils')
 const imageKitFile = require('../../utils/imageKitFile')
+const notification = require('../../utils/notification')
 
 module.exports = {
     me: async (req, res) => {
@@ -56,9 +57,9 @@ module.exports = {
                 }
             )
 
-            /* const sendNotification = await notification.createNotification("Update Password", null, "Ubah password berhasil" ,userId)
+            const sendNotification = await notification.createNotification("Update Password", "Ubah password berhasil", null, false, userId)
 
-            if(!sendNotification) console.log('Gagal mengirim notifikasi') */
+            if (!sendNotification) console.log('Gagal mengirim notifikasi')
 
             return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
 
