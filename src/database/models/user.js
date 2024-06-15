@@ -12,7 +12,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.PredictHistory, {
         foreignKey: 'userId',
-        as: 'user'
+        as: 'history'
+      })
+      User.hasMany(models.Discussion, {
+        foreignKey: 'userId',
+        as: 'discussion'
+      })
+      User.hasMany(models.DiscussionCommentar, {
+        foreignKey: 'userId',
+        as: 'commentar'
       })
     }
   }
