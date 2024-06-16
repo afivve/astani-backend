@@ -14,4 +14,14 @@ module.exports = {
         body("action")
             .notEmpty().withMessage("Data Tindakan Pencegahan tidak boleh kosong"),
     ],
+
+    diseaseLiteratur: [
+        body("link")
+            .notEmpty().withMessage("Link Litertur tidak boleh kosong"),
+    ],
+
+    diseaseYoutube: [
+        body("link")
+            .notEmpty().withMessage("Link Youtube tidak boleh kosong"),
+    ],
 }
