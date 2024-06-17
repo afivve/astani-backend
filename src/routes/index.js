@@ -9,10 +9,12 @@ const authRoute = require('./auth.route')
 const profileRoute = require('./profile.route')
 const discussionRoute = require('./discussion.route')
 const notificationRoute = require('./notification.route')
+const dashboardRoute = require('./dashboard.route')
 
 const router = express.Router()
 
 router.use("/auth", authRoute)
+router.use(dashboardRoute)
 router.use(notificationRoute)
 router.use(discussionRoute)
 router.use(profileRoute)

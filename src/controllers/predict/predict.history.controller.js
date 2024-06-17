@@ -29,6 +29,7 @@ module.exports = {
                 username: history.user.name,
                 userId: history.userId,
                 imageUrl: history.imageUrl,
+                time: utils.formatTanggalIndonesia(history.createdAt),
                 createdAt: history.createdAt
             }))
 
@@ -63,6 +64,7 @@ module.exports = {
                 diseaseName: history.disease.name,
                 confidence: history.confidence,
                 imageUrl: history.imageUrl,
+                time: utils.formatTanggalIndonesia(history.createdAt),
                 createdAt: history.createdAt,
             }))
 

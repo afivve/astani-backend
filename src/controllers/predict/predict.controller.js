@@ -2,7 +2,7 @@ const axios = require('axios')
 const FormData = require('form-data')
 const sharp = require('sharp')
 
-const { User, Disease, DiseaseSolution, PredictHistory, DiseaseLiteratur } = require('../../database/models')
+const { User, Disease, DiseaseSolution, PredictHistory, DiseaseLiteratur, DiseaseYoutube } = require('../../database/models')
 const utils = require('../../utils')
 const imageKitFile = require('../../utils/imageKitFile')
 
@@ -144,6 +144,10 @@ module.exports = {
                     {
                         model: DiseaseLiteratur,
                         as: 'literaturs'
+                    },
+                    {
+                        model: DiseaseYoutube,
+                        as: 'youtubes'
                     },
                 ]
             });
