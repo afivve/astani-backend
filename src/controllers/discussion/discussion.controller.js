@@ -1,6 +1,7 @@
 const { User, Discussion, DiscussionCommentar } = require('../../database/models')
 const utils = require('../../utils')
 const imageKitFile = require('../../utils/imageKitFile')
+const { Op } = require('sequelize')
 
 module.exports = {
     create: async (req, res) => {
@@ -112,8 +113,7 @@ module.exports = {
 
     readById: async (req, res) => {
         try {
-
-            const discussionId = req.params.id
+            const discussionId = req.params.id;
 
             const discussion = await Discussion.findOne({
                 where: {
@@ -137,7 +137,25 @@ module.exports = {
                 ]
             });
 
-            if (!discussion) return res.status(404).json(utils.apiError("Diskusi tidak ditemukan"))
+            if (!discussion) return res.status(404).json(utils.apiError("Diskusi tidak ditemukan"));
+
+            const formatCreatedAt = (createdAt) => {
+                const now = new Date();
+                const diffMs = now - new Date(createdAt);
+                const diffMinutes = Math.floor(diffMs / (1000 * 60));
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+                if (diffMinutes < 1) {
+                    return "baru saja";
+                } else if (diffMinutes < 60) {
+                    return `${diffMinutes} menit yang lalu`;
+                } else if (diffHours < 24) {
+                    return `${diffHours} jam yang lalu`;
+                } else {
+                    return `${diffDays} hari yang lalu`;
+                }
+            };
 
             const data = {
                 discussionId: discussion.id,
@@ -147,7 +165,7 @@ module.exports = {
                 userId: discussion.user.id,
                 username: discussion.user.name,
                 userPhoto: discussion.user.photoProfile,
-                createdAt: discussion.createdAt,
+                createdAt: formatCreatedAt(discussion.createdAt),
                 updatedAt: discussion.updatedAt,
                 commentars: discussion.commentars.map((comment) => ({
                     commentarId: comment.id,
@@ -156,21 +174,43 @@ module.exports = {
                     userId: comment.userId,
                     username: comment.user ? comment.user.name : null,
                     userPhoto: comment.user ? comment.user.photoProfile : null,
-                    createdAt: comment.createdAt,
+                    createdAt: formatCreatedAt(comment.createdAt),
                     updatedAt: comment.updatedAt
                 }))
-            }
+            };
 
-            return res.status(200).json(utils.apiSuccess("Sukses", data))
+            return res.status(200).json(utils.apiSuccess("Sukses", data));
         } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Internal server error"))
+            console.log(error);
+            return res.status(500).json(utils.apiError("Internal server error"));
         }
     },
 
     readAll: async (req, res) => {
         try {
+            let { page = 1, limit = 10, search, latest } = req.query;
+            page = parseInt(page);
+            limit = parseInt(limit);
+            let offset = (page - 1) * limit;
+
+            let whereClause = {};
+            if (search) {
+                whereClause = {
+                    [Op.or]: [
+                        { title: { [Op.like]: `%${search}%` } },
+                        { question: { [Op.like]: `%${search}%` } }
+                    ]
+                }
+            }
+
+            let order = [['createdAt', 'DESC']];
+
+            if (latest) {
+                order = [['createdAt', 'ASC']];
+            }
+
             const discussions = await Discussion.findAll({
+                where: whereClause,
                 include: [
                     {
                         model: DiscussionCommentar,
@@ -186,11 +226,40 @@ module.exports = {
                         model: User,
                         as: 'user',
                     }
-                ]
+                ],
+                order: order,
+                limit: limit,
+                offset: offset
             });
 
+            const totalData = await Discussion.count({
+                where: whereClause,
+            });
+
+            const totalPage = Math.ceil(totalData / limit);
+
             const data = discussions.map((discussion) => {
-                const totalComments = discussion.commentars.length
+                const totalComments = discussion.commentars.length;
+                const createdAt = new Date(discussion.createdAt);
+                const now = new Date();
+                const diffMs = now - createdAt;
+                const diffMinutes = Math.floor(diffMs / (1000 * 60));
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+                console.log(diffMs)
+
+                let formattedCreatedAt;
+                if (diffMinutes < 1) {
+                    formattedCreatedAt = "baru saja";
+                } else if (diffMinutes < 60) {
+                    formattedCreatedAt = `${diffMinutes} menit yang lalu`;
+                } else if (diffHours < 24) {
+                    formattedCreatedAt = `${diffHours} jam yang lalu`;
+                } else {
+                    formattedCreatedAt = `${diffDays} hari yang lalu`;
+                }
+
                 return {
                     id: discussion.id,
                     title: discussion.title,
@@ -199,14 +268,18 @@ module.exports = {
                     username: discussion.user.name,
                     userPhoto: discussion.user.photoProfile,
                     totalComments: totalComments,
-                    createdAt: discussion.createdAt,
+                    createdAt: formattedCreatedAt,
                 }
-            })
+            });
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data diskusi", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data diskusi", data, {
+                currentPage: page,
+                totalPage: totalPage,
+                totalData: totalData
+            }));
         } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Internal server error"))
+            console.log(error);
+            return res.status(500).json(utils.apiError("Internal server error"));
         }
     },
 
