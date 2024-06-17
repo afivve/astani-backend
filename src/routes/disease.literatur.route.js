@@ -11,6 +11,6 @@ router.post('/disease/:diseaseId/disease-literatur', validate(schema.diseaseLite
 router.get('/disease/:diseaseId/disease-literatur/', controller.readByIdDisease)
 router.get('/disease/:diseaseId/disease-literatur/:literaturId', controller.readByIdLiteratur)
 router.put('/disease/:diseaseId/disease-literatur/:literaturId', verifyToken, checkRole('admin'), controller.update)
-router.delete('/disease/:diseaseId/disease-literatur/:literaturId', verifyToken, checkRole('admin'), controller.delete)
+router.delete('/disease-literatur/:literaturId', verifyToken, checkRole('admin'), controller.delete)
 
 module.exports = router

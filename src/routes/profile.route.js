@@ -10,6 +10,7 @@ const router = express.Router()
 
 router.get('/profile', verifyToken, controller.me)
 router.put('/profile', verifyToken, validate(schema.updateProfile), controller.updateProfile)
+router.put('/profile/change-password', verifyToken, validate(schema.changePassword), controller.changePassword)
 router.put('/profile/images', verifyToken, checkRole('user'), validate(schema.updateProfilePhoto), multer.single('photoProfile'), controller.updateProfilePhoto)
 
 module.exports = router

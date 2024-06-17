@@ -38,8 +38,8 @@ module.exports = {
     readByIdLiteratur: async (req, res) => {
         try {
             const diseaseId = req.params.diseaseId
-            const solutionId = req.params.solutionId
-            const disease = await DiseaseLiteratur.findOne({ where: { id: solutionId, diseaseId: diseaseId } })
+            const literaturId = req.params.literaturId
+            const disease = await DiseaseLiteratur.findOne({ where: { id: literaturId, diseaseId: diseaseId } })
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data tidak ditemukan"))
@@ -58,18 +58,18 @@ module.exports = {
             const { link } = req.body
 
             const diseaseId = req.params.diseaseId
-            const solutionId = req.params.solutionId
-            const solutionDisease = await DiseaseLiteratur.findOne({ where: { id: solutionId, diseaseId: diseaseId } })
+            const literaturId = req.params.literaturId
+            const solutionDisease = await DiseaseLiteratur.findOne({ where: { id: literaturId, diseaseId: diseaseId } })
 
             if (!solutionDisease) {
                 return res.status(404).json(utils.apiError("Data tidak ditemukan"))
             }
 
-            await User.update(
+            await DiseaseLiteratur.update(
                 { link: link },
                 {
                     where: {
-                        id: solutionId,
+                        id: literaturId,
                         diseaseId: diseaseId
                     }
                 }
@@ -84,8 +84,8 @@ module.exports = {
 
     delete: async (req, res) => {
         try {
-            const diseaseId = req.params.diseaseId
-            const disease = await DiseaseLiteratur.findOne({ where: { diseaseId: diseaseId } })
+            const literaturId = req.params.literaturId
+            const disease = await DiseaseLiteratur.findOne({ where: { id: literaturId } })
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data tidak ditemukan"))

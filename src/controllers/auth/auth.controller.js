@@ -3,6 +3,8 @@ const utils = require('../../utils')
 const utilsOtp = require('../../utils/otp')
 const resetUtils = require('../../utils/reset.password')
 const axios = require('axios')
+const notification = require('../../utils/notification')
+
 
 module.exports = {
 
@@ -243,12 +245,13 @@ module.exports = {
     },
 
     changePassword: async (req, res) => {
+
         try {
 
-            const id = res.user.id
+            const userId = res.user.id
             const { oldPassword, newPassword } = req.body
 
-            const user = await User.findByPk(id)
+            const user = await User.findByPk(userId)
 
             if (!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
 
@@ -260,19 +263,20 @@ module.exports = {
 
             const hashPassword = await utils.hashData(newPassword)
 
-
             await User.update(
-                { password: hashPassword },
+                {
+                    password: hashPassword
+                },
                 {
                     where: {
-                        id: id
+                        id: userId
                     }
                 }
             )
 
-            /* const sendNotification = await notification.createNotification("Update Password", null, "Ubah password berhasil" ,userId)
+            const sendNotification = await notification.createNotification("Update Password", "Ubah password berhasil", null, false, userId)
 
-            if(!sendNotification) console.log('Gagal mengirim notifikasi') */
+            if (!sendNotification) console.log('Gagal mengirim notifikasi')
 
             return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
 
@@ -281,6 +285,7 @@ module.exports = {
             return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     },
+
 
     requestResetPassword: async (req, res) => {
         try {
