@@ -12,7 +12,7 @@ module.exports = {
                 diseaseId: diseaseId
             })
 
-            return res.status(201).json(utils.apiSuccess("Data berhasil dibuat", disease))
+            return res.status(201).json(utils.apiSuccess("Data literatur penyakit berhasil dibuat", disease))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Internal server error"))
@@ -25,10 +25,10 @@ module.exports = {
             const disease = await DiseaseLiteratur.findAll({ where: { diseaseId: diseaseId } })
 
             if (!disease) {
-                return res.status(404).json(utils.apiError("Data tidak ditemukan"))
+                return res.status(404).json(utils.apiError("Penyakit tidak ditemukan"))
             }
 
-            return res.status(200).json(utils.apiSuccess("Data berhasil ditemukan", disease))
+            return res.status(200).json(utils.apiSuccess("Data literatur penyakit berdasarkan ID penyakit berhasil ditemukan", disease))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Internal server error"))
@@ -42,10 +42,10 @@ module.exports = {
             const disease = await DiseaseLiteratur.findOne({ where: { id: literaturId, diseaseId: diseaseId } })
 
             if (!disease) {
-                return res.status(404).json(utils.apiError("Data tidak ditemukan"))
+                return res.status(404).json(utils.apiError("Data literatur penyakit tidak ditemukan"))
             }
 
-            return res.status(200).json(utils.apiSuccess("Data berhasil ditemukan", disease))
+            return res.status(200).json(utils.apiSuccess("Data literatur penyakit berdasarkan id berhasil ditemukan", disease))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Internal server error"))
@@ -62,7 +62,7 @@ module.exports = {
             const solutionDisease = await DiseaseLiteratur.findOne({ where: { id: literaturId, diseaseId: diseaseId } })
 
             if (!solutionDisease) {
-                return res.status(404).json(utils.apiError("Data tidak ditemukan"))
+                return res.status(404).json(utils.apiError("Data literatur penyakit tidak ditemukan"))
             }
 
             await DiseaseLiteratur.update(
@@ -75,7 +75,7 @@ module.exports = {
                 }
             )
 
-            return res.status(200).json(utils.apiSuccess("Data berhasil diperbarui"))
+            return res.status(200).json(utils.apiSuccess("Data literatur penyakit berhasil diperbarui"))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Internal server error"))
@@ -88,12 +88,12 @@ module.exports = {
             const disease = await DiseaseLiteratur.findOne({ where: { id: literaturId } })
 
             if (!disease) {
-                return res.status(404).json(utils.apiError("Data tidak ditemukan"))
+                return res.status(404).json(utils.apiError("Data literatur penyakit tidak ditemukan"))
             }
 
             await disease.destroy()
 
-            return res.status(200).json(utils.apiSuccess("Data berhasil dihapus"))
+            return res.status(200).json(utils.apiSuccess("Data literatur penyakit berhasil dihapus"))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Internal server error"))
