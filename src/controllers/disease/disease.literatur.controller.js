@@ -37,9 +37,9 @@ module.exports = {
 
     readByIdLiteratur: async (req, res) => {
         try {
-            const diseaseId = req.params.diseaseId
+
             const literaturId = req.params.literaturId
-            const disease = await DiseaseLiteratur.findOne({ where: { id: literaturId, diseaseId: diseaseId } })
+            const disease = await DiseaseLiteratur.findOne({ where: { id: literaturId, } })
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data literatur penyakit tidak ditemukan"))
@@ -57,9 +57,8 @@ module.exports = {
 
             const { link } = req.body
 
-            const diseaseId = req.params.diseaseId
             const literaturId = req.params.literaturId
-            const solutionDisease = await DiseaseLiteratur.findOne({ where: { id: literaturId, diseaseId: diseaseId } })
+            const solutionDisease = await DiseaseLiteratur.findOne({ where: { id: literaturId } })
 
             if (!solutionDisease) {
                 return res.status(404).json(utils.apiError("Data literatur penyakit tidak ditemukan"))
@@ -70,7 +69,6 @@ module.exports = {
                 {
                     where: {
                         id: literaturId,
-                        diseaseId: diseaseId
                     }
                 }
             )

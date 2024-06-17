@@ -28,7 +28,7 @@ module.exports = {
                 return res.status(404).json(utils.apiError("Data penanganan penyakit tidak ditemukan"));
             }
 
-            return res.status(200).json(utils.apiSuccess("Data penanganan penyakit berhasil ditemukan", disease));
+            return res.status(200).json(utils.apiSuccess("Data penanganan penyakit berdasarkan ID penyakit berhasil ditemukan", disease));
         } catch (error) {
             console.log(error);
             return res.status(500).json(utils.apiError("Internal server error"));
@@ -37,15 +37,14 @@ module.exports = {
 
     readByIdSolution: async (req, res) => {
         try {
-            const diseaseId = req.params.diseaseId;
             const solutionId = req.params.solutionId;
-            const disease = await DiseaseSolution.findOne({ where: { id: solutionId, diseaseId: diseaseId } })
+            const disease = await DiseaseSolution.findOne({ where: { id: solutionId } })
 
             if (!disease) {
-                return res.status(404).json(utils.apiError("Data penanganan penyakit tidak ditemukan"));
+                return res.status(404).json(utils.apiError("Data penanganan penyakit berdasarkan ID tidak ditemukan"));
             }
 
-            return res.status(200).json(utils.apiSuccess("Data penanganan penyakit berhasil ditemukan", disease));
+            return res.status(200).json(utils.apiSuccess("Data penanganan penyakit berdasarkan ID berhasil ditemukan", disease));
         } catch (error) {
             console.log(error);
             return res.status(500).json(utils.apiError("Internal server error"));
@@ -57,20 +56,18 @@ module.exports = {
 
             const { action } = req.body
 
-            const diseaseId = req.params.diseaseId;
             const solutionId = req.params.solutionId;
-            const solutionDisease = await DiseaseSolution.findOne({ where: { id: solutionId, diseaseId: diseaseId } });
+            const solutionDisease = await DiseaseSolution.findOne({ where: { id: solutionId, } });
 
             if (!solutionDisease) {
                 return res.status(404).json(utils.apiError("Data penanganan penyakit tidak ditemukan"));
             }
 
-            await User.update(
+            await DiseaseSolution.update(
                 { action: action },
                 {
                     where: {
                         id: solutionId,
-                        diseaseId: diseaseId
                     }
                 }
             )
@@ -84,8 +81,8 @@ module.exports = {
 
     delete: async (req, res) => {
         try {
-            const diseaseId = req.params.diseaseId;
-            const disease = await DiseaseSolution.findOne({ where: { diseaseId: diseaseId } });
+            const solutionId = req.params.solutionId;
+            const disease = await DiseaseSolution.findOne({ where: { id: solutionId } });
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data penanganan penyakit tidak ditemukan"));

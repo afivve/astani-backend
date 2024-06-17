@@ -37,9 +37,9 @@ module.exports = {
 
     readByIdYoutube: async (req, res) => {
         try {
-            const diseaseId = req.params.diseaseId
+
             const youtubeId = req.params.youtubeId
-            const disease = await DiseaseYoutube.findOne({ where: { id: youtubeId, diseaseId: diseaseId } })
+            const disease = await DiseaseYoutube.findOne({ where: { id: youtubeId } })
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data video YouTube tentang penyakit tidak ditemukan"))
@@ -57,20 +57,18 @@ module.exports = {
 
             const { link } = req.body
 
-            const diseaseId = req.params.diseaseId
             const youtubeId = req.params.youtubeId
-            const solutionDisease = await DiseaseYoutube.findOne({ where: { id: youtubeId, diseaseId: diseaseId } })
+            const solutionDisease = await DiseaseYoutube.findOne({ where: { id: youtubeId } })
 
             if (!solutionDisease) {
                 return res.status(404).json(utils.apiError("Data video YouTube tentang penyakit tidak ditemukan"))
             }
 
-            await User.update(
+            await DiseaseYoutube.update(
                 { link: link },
                 {
                     where: {
                         id: youtubeId,
-                        diseaseId: diseaseId
                     }
                 }
             )
@@ -84,8 +82,10 @@ module.exports = {
 
     delete: async (req, res) => {
         try {
-            const diseaseId = req.params.diseaseId
-            const disease = await DiseaseYoutube.findOne({ where: { diseaseId: diseaseId } })
+
+            const youtubeId = req.params.youtubeId
+
+            const disease = await DiseaseYoutube.findOne({ where: { id: youtubeId } })
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data video YouTube tentang penyakit tidak ditemukan"))

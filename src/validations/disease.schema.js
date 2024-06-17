@@ -6,7 +6,7 @@ module.exports = {
             .notEmpty().withMessage("Nama Penyakit tidak boleh kosong"),
         body("caused")
             .notEmpty().withMessage("Data Penyebab tidak boleh kosong"),
-        body("symptomps")
+        body("symtomps")
             .notEmpty().withMessage("Data Gejala tidak boleh kosong"),
     ],
 

@@ -7,11 +7,11 @@ const checkRole = require('../middlewares/check.role')
 
 const router = express.Router()
 
-router.post('/disease/:diseaseId/disease-solution', validate(schema.diseaseSolution), verifyToken, checkRole('admin'), controller.create)
+router.post('/disease/:diseaseId/disease-solution', verifyToken, checkRole('admin'), validate(schema.diseaseSolution), controller.create)
 router.get('/disease/:diseaseId/disease-solution/', controller.readByIdDisease)
-router.get('/disease/:diseaseId/disease-solution/:solutionId', controller.readByIdSolution)
-router.put('/disease/:diseaseId/disease-solution/:solutionId', verifyToken, checkRole('admin'), controller.update)
-router.delete('/disease/:diseaseId/disease-solution/:solutionId', verifyToken, checkRole('admin'), controller.delete)
+router.get('/disease-solution/:solutionId', controller.readByIdSolution)
+router.put('/disease-solution/:solutionId', verifyToken, checkRole('admin'), validate(schema.diseaseSolution), controller.update)
+router.delete('/disease-solution/:solutionId', verifyToken, checkRole('admin'), controller.delete)
 
 
 module.exports = router
