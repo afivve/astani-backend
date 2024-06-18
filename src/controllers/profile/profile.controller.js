@@ -17,7 +17,8 @@ module.exports = {
                 age: user.age,
                 city: user.city,
                 province: user.province,
-                photoProfile: user.photoProfile
+                photoProfile: user.photoProfile,
+                role: user.role
             }
 
             return res.status(200).json(utils.apiSuccess("Data user berhasil diambil", data))
