@@ -1,4 +1,4 @@
-const { User, Disease, PredictHistory } = require('../../database/models')
+const { User, Discussion, DiscussionCommentar, Disease, PredictHistory } = require('../../database/models')
 const utils = require('../../utils')
 const { Sequelize, Op } = require('sequelize')
 
@@ -84,9 +84,56 @@ module.exports = {
             if (!predictHistory.length) return res.status(404).json(utils.apiError("Tidak ada data histori"))
 
 
-            const totalUser = predictHistory.length;
+            const totalUser = predictHistory.length
 
             return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", { totalUser }))
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Internal server error"))
+        }
+    },
+
+    mostActiveDiscussion: async (req, res) => {
+        try {
+
+            const now = new Date()
+            const sevenDaysAgo = new Date()
+            sevenDaysAgo.setDate(now.getDate() - 7)
+
+            const discussions = await Discussion.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [sevenDaysAgo, now]
+                    }
+                },
+                include: [
+                    {
+                        model: DiscussionCommentar,
+                        as: 'commentars',
+                    },
+                ],
+                order: [['createdAt', 'DESC']]
+            })
+
+            discussions.sort((a, b) => b.commentars.length - a.commentars.length)
+
+            const topDiscussions = discussions.slice(0, 5)
+
+            const data = topDiscussions.map((discussion) => {
+                const totalComments = discussion.commentars.length;
+
+                return {
+                    id: discussion.id,
+                    title: discussion.title,
+                    question: discussion.question,
+                    userId: discussion.userId,
+                    totalComments: totalComments,
+                    createdAt: discussion.createdAt,
+                }
+            })
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data diskusi teratas", data));
+
         } catch (error) {
             console.log(error);
             return res.status(500).json(utils.apiError("Internal server error"))

@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     question: DataTypes.STRING,
     urlPhoto: DataTypes.STRING,
     imageFilename: DataTypes.STRING,
-    userId: DataTypes.INTEGER
+    userId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Discussion',

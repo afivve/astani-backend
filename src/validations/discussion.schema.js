@@ -12,6 +12,12 @@ module.exports = {
             .isLength({ min: 4 }).withMessage("Terlalu pendek")
             .isString().withMessage("Nama harus berupa string"),
     ],
+
+    likeDiscussion: [
+        body("discussiondId")
+            .notEmpty().withMessage("Discussion ID tidak boleh kosong")
+    ],
+
     commentar: [
         body("commentar")
             .notEmpty().withMessage("Nama tidak boleh kosong")

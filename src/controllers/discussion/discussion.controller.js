@@ -3,7 +3,9 @@ const utils = require('../../utils')
 const imageKitFile = require('../../utils/imageKitFile')
 const { Op } = require('sequelize')
 
+
 module.exports = {
+
     create: async (req, res) => {
         try {
 
@@ -223,7 +225,7 @@ module.exports = {
                 order: order,
                 limit: limit,
                 offset: offset
-            });
+            })
 
             const totalData = await Discussion.count({
                 where: whereClause,
