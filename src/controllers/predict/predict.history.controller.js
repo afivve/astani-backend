@@ -7,6 +7,11 @@ module.exports = {
     readAll: async (req, res) => {
         try {
 
+            let { page = 1, limit = 10 } = req.query;
+            page = parseInt(page);
+            limit = parseInt(limit);
+            let offset = (page - 1) * limit;
+
             const predictHistory = await PredictHistory.findAll({
                 include: [
                     {
@@ -17,10 +22,17 @@ module.exports = {
                         model: User,
                         as: 'user'
                     }
-                ]
+                ],
+                order: [['id', 'DESC']],
+                limit: limit,
+                offset: offset
             })
 
             if (!predictHistory) return res.status(404).json(utils.apiError("Tidak ada data histori"))
+
+            const totalData = await PredictHistory.count()
+
+            const totalPage = Math.ceil(totalData / limit)
 
             const data = predictHistory.map(history => ({
                 historyId: history.id,
@@ -33,7 +45,11 @@ module.exports = {
                 createdAt: history.createdAt
             }))
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", data, {
+                currentPage: page,
+                totalPage: totalPage,
+                totalData: totalData
+            }))
 
         } catch (error) {
             console.log(error);
@@ -54,7 +70,8 @@ module.exports = {
                         model: Disease,
                         as: 'disease',
                     }
-                ]
+                ],
+                order: [['id', 'DESC']]
             })
 
             if (!predictHistory) return res.status(404).json(utils.apiError("Tidak ada data histori"))

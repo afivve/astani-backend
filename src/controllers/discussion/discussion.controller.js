@@ -229,9 +229,9 @@ module.exports = {
 
             const totalData = await Discussion.count({
                 where: whereClause,
-            });
+            })
 
-            const totalPage = Math.ceil(totalData / limit);
+            const totalPage = Math.ceil(totalData / limit)
 
             const data = discussions.map((discussion) => {
                 const totalComments = discussion.commentars.length

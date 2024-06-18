@@ -21,13 +21,13 @@ module.exports = {
                 group: ['diseaseId', 'disease.name']
             })
 
-            if (!predictHistory.length) return res.status(404).json(utils.apiError("Tidak ada data histori"))
+            if (!predictHistory.length) return res.status(404).json(utils.apiError("Tidak ada data"))
 
             const totalPredictions = predictHistory.reduce((sum, record) => sum + parseInt(record.dataValues.count, 10), 0)
 
             const result = predictHistory.map(record => {
                 const count = parseInt(record.dataValues.count, 10)
-                const percentage = (count / totalPredictions * 100).toFixed(2)
+                const percentage = (count / totalPredictions * 100)
                 return {
                     diseaseName: record.disease.name,
                     count,
@@ -35,7 +35,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", result, { totalPredict: predictHistory.length }))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data presentase", result, { totalPredict: predictHistory.length }))
         } catch (error) {
             console.log(error);
             return res.status(500).json(utils.apiError("Internal server error"))
@@ -48,7 +48,20 @@ module.exports = {
 
             const totalUser = user.length
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", { totalUser }))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data total user", { totalUser }))
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(utils.apiError("Internal server error"))
+        }
+    },
+
+    totalPredict: async (req, res) => {
+        try {
+            const predictHistory = await PredictHistory.findAll()
+
+            const totalPredictHistory = predictHistory.length
+
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data total identifikasi", { totalPredictHistory }))
         } catch (error) {
             console.log(error);
             return res.status(500).json(utils.apiError("Internal server error"))
@@ -86,7 +99,7 @@ module.exports = {
 
             const totalUser = predictHistory.length
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data", { totalUser }))
+            return res.status(200).json(utils.apiSuccess("Berhasil mengambil data user aktif 7 hari terakhir", { totalUser }))
         } catch (error) {
             console.log(error);
             return res.status(500).json(utils.apiError("Internal server error"))
