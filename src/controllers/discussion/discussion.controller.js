@@ -139,23 +139,10 @@ module.exports = {
 
             if (!discussion) return res.status(404).json(utils.apiError("Diskusi tidak ditemukan"));
 
-            const formatCreatedAt = (createdAt) => {
-                const now = new Date();
-                const diffMs = now - new Date(createdAt);
-                const diffMinutes = Math.floor(diffMs / (1000 * 60));
-                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-                if (diffMinutes < 1) {
-                    return "baru saja";
-                } else if (diffMinutes < 60) {
-                    return `${diffMinutes} menit yang lalu`;
-                } else if (diffHours < 24) {
-                    return `${diffHours} jam yang lalu`;
-                } else {
-                    return `${diffDays} hari yang lalu`;
-                }
-            };
+            const createdAtDiscussion = new Date(discussion.createdAt)
+            const formatWaktuIndonesiaDiscussion = utils.formatWaktuIndonesia(createdAtDiscussion)
+
 
             const data = {
                 discussionId: discussion.id,
@@ -165,18 +152,24 @@ module.exports = {
                 userId: discussion.user.id,
                 username: discussion.user.name,
                 userPhoto: discussion.user.photoProfile,
-                createdAt: formatCreatedAt(discussion.createdAt),
+                createdAt: formatWaktuIndonesiaDiscussion,
                 updatedAt: discussion.updatedAt,
-                commentars: discussion.commentars.map((comment) => ({
-                    commentarId: comment.id,
-                    commentar: comment.commentar,
-                    photoCommentar: comment.urlPhoto,
-                    userId: comment.userId,
-                    username: comment.user ? comment.user.name : null,
-                    userPhoto: comment.user ? comment.user.photoProfile : null,
-                    createdAt: formatCreatedAt(comment.createdAt),
-                    updatedAt: comment.updatedAt
-                }))
+                commentars: discussion.commentars.map((comment) => {
+
+                    const createdAtCommentar = new Date(comment.createdAt)
+                    const formatWaktuIndonesiaCommentar = utils.formatWaktuIndonesia(createdAtCommentar)
+
+                    return {
+                        commentarId: comment.id,
+                        commentar: comment.commentar,
+                        photoCommentar: comment.urlPhoto,
+                        userId: comment.userId,
+                        username: comment.user ? comment.user.name : null,
+                        userPhoto: comment.user ? comment.user.photoProfile : null,
+                        createdAt: formatWaktuIndonesiaCommentar,
+                        updatedAt: comment.updatedAt
+                    }
+                })
             };
 
             return res.status(200).json(utils.apiSuccess("Sukses", data));
@@ -239,26 +232,9 @@ module.exports = {
             const totalPage = Math.ceil(totalData / limit);
 
             const data = discussions.map((discussion) => {
-                const totalComments = discussion.commentars.length;
-                const createdAt = new Date(discussion.createdAt);
-                const now = new Date();
-                const diffMs = now - createdAt;
-                const diffMinutes = Math.floor(diffMs / (1000 * 60));
-                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-                console.log(diffMs)
-
-                let formattedCreatedAt;
-                if (diffMinutes < 1) {
-                    formattedCreatedAt = "baru saja";
-                } else if (diffMinutes < 60) {
-                    formattedCreatedAt = `${diffMinutes} menit yang lalu`;
-                } else if (diffHours < 24) {
-                    formattedCreatedAt = `${diffHours} jam yang lalu`;
-                } else {
-                    formattedCreatedAt = `${diffDays} hari yang lalu`;
-                }
+                const totalComments = discussion.commentars.length
+                const createdAt = new Date(discussion.createdAt)
+                const formatWaktuIndonesia = utils.formatWaktuIndonesia(createdAt)
 
                 return {
                     id: discussion.id,
@@ -268,7 +244,7 @@ module.exports = {
                     username: discussion.user.name,
                     userPhoto: discussion.user.photoProfile,
                     totalComments: totalComments,
-                    createdAt: formattedCreatedAt,
+                    createdAt: formatWaktuIndonesia,
                 }
             });
 

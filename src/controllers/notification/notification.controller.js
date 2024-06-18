@@ -23,22 +23,7 @@ module.exports = {
             })
 
             const createdAt = new Date(notifications.createdAt);
-            const now = new Date();
-            const diffMs = now - createdAt;
-            const diffMinutes = Math.floor(diffMs / (1000 * 60));
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-            let formattedCreatedAt;
-            if (diffMinutes < 1) {
-                formattedCreatedAt = "baru saja";
-            } else if (diffMinutes < 60) {
-                formattedCreatedAt = `${diffMinutes} menit yang lalu`;
-            } else if (diffHours < 24) {
-                formattedCreatedAt = `${diffHours} jam yang lalu`;
-            } else {
-                formattedCreatedAt = `${diffDays} hari yang lalu`;
-            }
+            const formattedCreatedAt = utils.formatWaktuIndonesia(createdAt)
 
             const data = {
                 id: notifications.id,
