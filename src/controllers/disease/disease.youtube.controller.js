@@ -49,7 +49,7 @@ module.exports = {
 
             const data = diseaseYoutubes.map(diseaseYoutube => ({
                 id: diseaseYoutube.id,
-                action: diseaseYoutube.action,
+                link: diseaseYoutube.link,
                 diseaseId: diseaseYoutube.diseaseId,
                 diseaseName: diseaseYoutube.disease.name,
                 createdAt: diseaseYoutube.createdAt,

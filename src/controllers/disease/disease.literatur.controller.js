@@ -49,7 +49,7 @@ module.exports = {
 
             const data = diseaseLiteraturs.map(diseaseLiteratur => ({
                 id: diseaseLiteratur.id,
-                action: diseaseLiteratur.action,
+                link: diseaseLiteratur.link,
                 diseaseId: diseaseLiteratur.diseaseId,
                 diseaseName: diseaseLiteratur.disease.name,
                 createdAt: diseaseLiteratur.createdAt,
