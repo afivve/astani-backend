@@ -1,4 +1,4 @@
-const { DiseaseYoutube } = require('../../database/models')
+const { Disease, DiseaseYoutube } = require('../../database/models')
 const utils = require('../../utils')
 
 module.exports = {
@@ -22,9 +22,20 @@ module.exports = {
     readByIdDisease: async (req, res) => {
         try {
             const diseaseId = req.params.diseaseId
-            const diseaseYoutubes = await DiseaseYoutube.findAll({ where: { diseaseId: diseaseId } })
+            const diseaseYoutubes = await DiseaseYoutube.findAll({
+                where: {
+                    diseaseId: diseaseId
+                },
+                include: [
+                    {
+                        model: Disease,
+                        as: 'disease'
+                    },
+                ]
 
-            if (!disease) {
+            })
+
+            if (!diseaseYoutubes) {
                 return res.status(404).json(utils.apiError("Data video YouTube tentang penyakit tidak ditemukan"))
             }
 

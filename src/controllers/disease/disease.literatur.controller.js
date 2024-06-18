@@ -22,10 +22,21 @@ module.exports = {
     readByIdDisease: async (req, res) => {
         try {
             const diseaseId = req.params.diseaseId
-            const diseaseLiteraturs = await DiseaseLiteratur.findAll({ where: { diseaseId: diseaseId } })
+            const diseaseLiteraturs = await DiseaseLiteratur.findAll({
+                where: {
+                    diseaseId: diseaseId
+                },
+                include: [
+                    {
+                        model: Disease,
+                        as: 'disease'
+                    },
+                ]
 
-            if (!disease) {
-                return res.status(404).json(utils.apiError("Penyakit tidak ditemukan"))
+            })
+
+            if (!diseaseLiteraturs) {
+                return res.status(404).json(utils.apiError("Data Literatur Penyakit tidak ada"))
             }
 
             const disease = await Disease.findOne({
