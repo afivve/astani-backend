@@ -22,13 +22,31 @@ module.exports = {
     readByIdDisease: async (req, res) => {
         try {
             const diseaseId = req.params.diseaseId
-            const disease = await DiseaseYoutube.findAll({ where: { diseaseId: diseaseId } })
+            const diseaseYoutubes = await DiseaseYoutube.findAll({ where: { diseaseId: diseaseId } })
 
             if (!disease) {
                 return res.status(404).json(utils.apiError("Data video YouTube tentang penyakit tidak ditemukan"))
             }
 
-            return res.status(200).json(utils.apiSuccess("Data video YouTube tentang penyakit berhasil ditemukan", disease))
+            const disease = await Disease.findOne({
+                where: {
+                    id: diseaseId
+                }
+            })
+
+            const diseaseName = disease.name
+
+            const data = diseaseYoutubes.map(diseaseYoutube => ({
+                id: diseaseYoutube.id,
+                action: diseaseYoutube.action,
+                diseaseId: diseaseYoutube.diseaseId,
+                diseaseName: diseaseYoutube.disease.name,
+                createdAt: diseaseYoutube.createdAt,
+                updatedAt: diseaseYoutube.updatedAt,
+            }))
+
+
+            return res.status(200).json(utils.apiSuccess("Data video YouTube tentang penyakit berhasil ditemukan", data, { diseaseName }))
         } catch (error) {
             console.log(error)
             return res.status(500).json(utils.apiError("Internal server error"))
