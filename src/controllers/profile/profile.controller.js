@@ -28,98 +28,13 @@ module.exports = {
         }
     },
 
-    changePassword: async (req, res) => {
-
-        try {
-
-            const userId = res.user.id
-            const { oldPassword, newPassword } = req.body
-
-            const user = await User.findByPk(userId)
-
-            if (!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
-
-            if (user.password) {
-                const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
-
-                if (!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
-            }
-
-            const hashPassword = await utils.hashData(newPassword)
-
-            await User.update(
-                {
-                    password: hashPassword
-                },
-                {
-                    where: {
-                        id: userId
-                    }
-                }
-            )
-
-            const sendNotification = await notification.createNotification("Update Password", "Ubah password berhasil", null, false, userId)
-
-            if (!sendNotification) console.log('Gagal mengirim notifikasi')
-
-            return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
-
-    changePasswordGoogle: async (req, res) => {
-
-        try {
-
-            const userId = res.user.id
-            const { oldPassword, newPassword } = req.body
-
-            const user = await User.findByPk(userId)
-
-            if (!user) return res.status(404).json(utils.apiError("User tidak ditemukkan"))
-
-            const verifyOldPassword = await utils.verifyHashData(oldPassword, user.password)
-
-            if (!verifyOldPassword) return res.status(409).json(utils.apiError("Password lama salah"))
-
-            const hashPassword = await utils.hashData(newPassword)
-
-            await User.update(
-                {
-                    password: hashPassword
-                },
-                {
-                    where: {
-                        id: userId
-                    }
-                }
-            )
-
-            /* const sendNotification = await notification.createNotification("Update Password", null, "Ubah password berhasil" ,userId)
-
-            if(!sendNotification) console.log('Gagal mengirim notifikasi') */
-
-            return res.status(200).json(utils.apiSuccess("Password berhasil diubah"))
-
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
-        }
-    },
-
     updateProfile: async (req, res) => {
         try {
 
             const { name, email, phone, gender, age, province, city } = req.body
 
-            await db.user.update({
-                where: {
-                    id: res.user.id
-                },
-                data: {
+            await User.update(
+                {
                     name: name,
                     email: email,
                     phone: phone,
@@ -127,8 +42,14 @@ module.exports = {
                     age: age,
                     province: province,
                     city: city
+                },
+                {
+                    where: {
+                        id: res.user.id
+                    }
                 }
-            })
+
+            )
 
             const sendNotification = await notification.createNotification("Update Profile", "Profile berhasil diperbarui", null, false, res.user.id)
 
