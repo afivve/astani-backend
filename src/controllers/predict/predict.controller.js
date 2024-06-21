@@ -173,7 +173,8 @@ module.exports = {
                 caused: diseases.caused,
                 symtomps: diseases.symtomps,
                 solutions: diseases.solutions,
-                literaturs: diseases.literaturs
+                literaturs: diseases.literaturs,
+                youtubes: diseases.youtubes
             };
 
             if (history) {
