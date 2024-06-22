@@ -130,7 +130,7 @@ module.exports = {
 
             discussions.sort((a, b) => b.commentars.length - a.commentars.length)
 
-            const topDiscussions = discussions.slice(0, 5)
+            const topDiscussions = discussions.slice(0, 6)
 
             const data = topDiscussions.map((discussion) => {
                 const totalComments = discussion.commentars.length;

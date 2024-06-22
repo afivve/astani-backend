@@ -9,7 +9,6 @@ router.get('/dashboard/result-precentage', verifyToken, checkRole('admin'), cont
 router.get('/dashboard/total-user', verifyToken, checkRole('admin'), controller.totalUser)
 router.get('/dashboard/total-predict', verifyToken, checkRole('admin'), controller.totalPredict)
 router.get('/dashboard/last-seven-user', verifyToken, checkRole('admin'), controller.lastSevenDaysActive)
-router.get('/dashboard/most-active-discussion', verifyToken, checkRole('admin'), controller.mostActiveDiscussion)
-
+router.get('/dashboard/most-active-discussion', verifyToken, checkRole('user'), controller.mostActiveDiscussion)
 
 module.exports = router
