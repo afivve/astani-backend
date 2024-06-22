@@ -10,6 +10,7 @@ module.exports = {
             const user = await User.findByPk(id)
 
             const data = {
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
