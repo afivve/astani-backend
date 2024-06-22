@@ -133,7 +133,8 @@ module.exports = {
             const token = await utils.createJwt(payload)
 
             const data = {
-                token: token
+                token: token,
+                role: user.role
             }
 
             return res.status(200).json(utils.apiSuccess("Login berhasil", data))
