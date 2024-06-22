@@ -54,9 +54,9 @@ module.exports = {
         try {
             const id = req.params.id
 
-            const dicsussion = await Discussion.findByPk(id)
+            const discussion = await Discussion.findByPk(id)
 
-            if (!dicsussion) return res.status(404).json(utils.apiError("Diskusi Tidak di temukan"))
+            if (!discussion) return res.status(404).json(utils.apiError("Diskusi Tidak di temukan"))
 
             const photoDiscussion = req.file
 
@@ -69,8 +69,8 @@ module.exports = {
 
             if (typeof photoDiscussion === 'undefined') {
 
-                imageUrl = dicsussion.urlPhoto
-                imageFileName = dicsussion.imageFilename
+                imageUrl = discussion.urlPhoto
+                imageFileName = discussion.imageFilename
 
             } else {
                 if (!allowedMimes.includes(photoDiscussion.mimetype)) return res.status(409).json(utils.apiError("Format gambar tidak diperbolehkan"))
@@ -91,7 +91,7 @@ module.exports = {
             const { title, question } = req.body
             const userId = res.user.id
 
-            const discussion = await Discussion.update(
+            await Discussion.update(
                 {
                     title: title,
                     question: question,
