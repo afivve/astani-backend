@@ -137,7 +137,9 @@ module.exports = {
             const topDiscussions = discussions.slice(0, 6)
 
             const data = topDiscussions.map((discussion) => {
-                const totalComments = discussion.commentars.length;
+                const totalComments = discussion.commentars.length
+                const createdAt = new Date(discussion.createdAt)
+                const formatWaktuIndonesia = utils.formatWaktuIndonesia(createdAt)
 
                 return {
                     id: discussion.id,
@@ -147,7 +149,7 @@ module.exports = {
                     username: discussion.user.name,
                     photoProfile: discussion.user.photoProfile,
                     totalComments: totalComments,
-                    createdAt: discussion.createdAt,
+                    createdAt: formatWaktuIndonesia,
                 }
             })
 
