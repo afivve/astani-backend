@@ -145,6 +145,7 @@ module.exports = {
                     question: discussion.question,
                     userId: discussion.userId,
                     username: discussion.user.name,
+                    photoProfile: discussion.user.photoProfile,
                     totalComments: totalComments,
                     createdAt: discussion.createdAt,
                 }
