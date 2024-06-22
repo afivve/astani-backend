@@ -94,7 +94,7 @@ module.exports = {
                 },
                 {
                     where: {
-                        d: res.user.id
+                        id: res.user.id
                     }
                 }
             )

@@ -6,8 +6,6 @@ const checkRole = (...roles) => {
 
             const role = res.user.role
 
-            console.log("================", res.user)
-
             if (roles.includes(role)) {
                 return next()
             } else {
@@ -16,7 +14,6 @@ const checkRole = (...roles) => {
 
         } catch (error) {
             console.log(error)
-            console.log("================", res.user)
             return res.status(500).json(utils.apiError("Kesalahan pada Internal Server"))
         }
     }
