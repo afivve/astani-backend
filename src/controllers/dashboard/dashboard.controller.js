@@ -124,6 +124,10 @@ module.exports = {
                         model: DiscussionCommentar,
                         as: 'commentars',
                     },
+                    {
+                        model: User,
+                        as: 'user',
+                    },
                 ],
                 order: [['createdAt', 'DESC']]
             })
@@ -140,6 +144,7 @@ module.exports = {
                     title: discussion.title,
                     question: discussion.question,
                     userId: discussion.userId,
+                    username: discussion.user.name,
                     totalComments: totalComments,
                     createdAt: discussion.createdAt,
                 }
