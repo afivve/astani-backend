@@ -293,15 +293,13 @@ module.exports = {
 
             const { email } = req.body
 
-            const user = await db.user.findFirst({
+            const user = await User.findOne({
                 where: {
                     email: email
                 }
             })
 
             if (!user) return res.status(404).json(utils.apiError("Email tidak ditemukkan"))
-
-            if (user.resetToken != null) return res.status(500).json(utils.apiError("Link untuk reset password sudah dikirim ke email anda"))
 
             let bcryptResetToken = await utils.hashData(email)
 
@@ -320,9 +318,9 @@ module.exports = {
 
             const resetPasswordSent = await resetUtils.send(email, resetToken)
 
-            if (!resetPasswordSent) return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
+            if (resetPasswordSent && user.resetToken != null) return res.status(200).json(utils.apiSuccess("Link untuk reset password sudah dikirim ke email anda"))
 
-            return res.status(200).json(utils.apiSuccess("Periksa email anda untuk link reset password"))
+            if (!resetPasswordSent) return res.status(500).json(utils.apiError('Kesalahan pada internal server'))
 
         } catch (error) {
             console.log(error)
@@ -334,6 +332,8 @@ module.exports = {
         try {
 
             const { resetToken, password } = req.body
+
+            if (!resetToken) return res.status(500).json(utils.apiError("Reset token tidak ada"))
 
             const user = await User.findOne({
                 where: {

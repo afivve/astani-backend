@@ -1,4 +1,4 @@
-const { User, Disease, DiseaseSolution, PredictHistory, DiseaseLiteratur } = require('../../database/models')
+const { User, Disease, DiseaseSolution, PredictHistory, DiseaseLiteratur, DiseaseYoutube } = require('../../database/models')
 const utils = require('../../utils')
 
 
@@ -116,6 +116,10 @@ module.exports = {
                                 model: DiseaseLiteratur,
                                 as: 'literaturs'
                             },
+                            {
+                                model: DiseaseYoutube,
+                                as: 'youtubes'
+                            },
                         ]
                     }
                 ]
@@ -139,6 +143,10 @@ module.exports = {
                 literaturs: predictHistory.disease.literaturs.map(literatur => ({
                     literaturId: literatur.id,
                     link: literatur.link
+                })),
+                youtubes: predictHistory.disease.youtubes.map(youtube => ({
+                    youtubeId: youtube.id,
+                    link: youtube.link
                 }))
             }
 

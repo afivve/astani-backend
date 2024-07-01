@@ -22,7 +22,7 @@ module.exports = {
                 },
             })
 
-            const createdAt = new Date(notifications.createdAt);
+            const createdAt = new Date(notifications.createdAt)
             const formattedCreatedAt = utils.formatWaktuIndonesia(createdAt)
 
             const data = {
@@ -38,7 +38,7 @@ module.exports = {
             const totalNotificationUnread = notificationUnread.length
 
 
-            return res.status(200).json(utils.apiSuccess("Berhasil mendapatkan notifikasi berdasarkan user id", data, { notificationUnread: totalNotificationUnread }))
+            return res.status(200).json(utils.apiSuccess("Berhasil mendapatkan notifikasi berdasarkan user id", notifications, { notificationUnread: totalNotificationUnread } /* data, { notificationUnread: totalNotificationUnread } */))
 
         } catch (error) {
             console.log(error)

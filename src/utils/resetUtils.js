@@ -14,7 +14,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error)
-            return false
+            return res.status(500).json(utils.apiError("Kesalahan pada internal server"))
         }
     }
 }
